@@ -9,13 +9,13 @@ Install
 Run
 
 ```
-php composer require pantera/yii2-seo "*"
+php composer require pantera-digital/yii2-seo "*"
 ```
 
 Or add to composer.json
 
 ```
-"pantera/yii2-seo": "*",
+"pantera-digital/yii2-seo": "*",
 ```
 
 and execute:
