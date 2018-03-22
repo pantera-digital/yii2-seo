@@ -23,23 +23,24 @@ class SeoFields extends Behavior
     public function updateFields($event)
     {
         $post = Yii::$app->request->post();
+        //Проверим на наличие в посте сео данных
+        if(!empty($post['Seo'])) {
+            //Найдем существующую модель
+            if (($model = Seo::findOne(['item_id' => $this->owner->id, 'modelName' => $this->owner->className() ])) === null) {
+                //Создадим новую модель
+                $model = new Seo([
+                    'item_id' => $this->owner->id,
+                    'modelName' => $this->owner->className(),
+                ]);
+            }
 
-        //Найдем существующую модель
-        if (($model = Seo::findOne(['item_id' => $this->owner->id, 'modelName' => $this->owner->className() ])) === null) {
-            //Создадим новую модель
-            $model = new Seo([
-                'item_id' => $this->owner->id,
-                'modelName' => $this->owner->className(),
-            ]);
+            $model->load($post);
+            $model->save();
+
+            //Почистим пост от наших данных
+            unset($post['Seo']);
+            Yii::$app->request->setBodyParams($post);
         }
-
-        $model->load($post);
-        $model->save();
-
-        //Почистим пост от наших данных
-        unset($post['Seo']);
-        Yii::$app->request->setBodyParams($post);
-
     }
     
     public function deleteFields($event)

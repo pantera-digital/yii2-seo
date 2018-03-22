@@ -46,13 +46,16 @@ class SeoForm extends \yii\base\Widget
         $content[] = $this->form->field($this->model, 'text')->textarea(['rows' => 6]);
         $content[] = $this->form->field($this->model, 'meta_index')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'redirect_301')->textInput(['maxlength' => true]);
+        $header =  Html::tag('div', Html::tag('h5',$this->title), [
+            'class' => 'panel-heading'
+        ]);
+
+        $body = Html::tag('div',implode('', $content), [
+            'class' => 'panel-body'
+        ]);
+
+        $panel = Html::tag('div',$header . $body,['class' => 'panel panel-default']);
         
-        $title = Html::a($this->title, '#seo-body', ['class' => 'toggle']);
-        $heading = Html::tag('div', $title, ['class' => 'panel-heading']);
-        $body = Html::tag('div', implode('', $content), ['class' => 'panel-body', 'id' => 'seo-body', 'style' => 'display:none;']);
-        
-        $view = Html::tag('div', $heading . $body, ['class' => 'panel panel-default pantera-seo']);
-        
-        return $view;
+        return $panel;
     }
 }
