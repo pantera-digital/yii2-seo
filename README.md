@@ -1,7 +1,7 @@
 Yii2 SEO module
 ==========
 
-SEO-fields for your models: title, description, keyeords and some others
+SEO-fields for your models: title, description, keywords and some others
 
 Install
 ---------------------------------
