@@ -14,7 +14,7 @@ use Yii;
  * @property string $seo_title
  * @property string $seo_keywords
  * @property string $seo_description
- * @property string $seo_text
+ * @property string $text
  * @property string $meta_index
  * @property string $redirect_301
  */
