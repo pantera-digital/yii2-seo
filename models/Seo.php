@@ -11,9 +11,9 @@ use Yii;
  * @property integer $item_id
  * @property string $modelName
  * @property string $h1
- * @property string $seo_title
- * @property string $seo_keywords
- * @property string $seo_description
+ * @property string $title
+ * @property string $keywords
+ * @property string $description
  * @property string $text
  * @property string $meta_index
  * @property string $redirect_301
