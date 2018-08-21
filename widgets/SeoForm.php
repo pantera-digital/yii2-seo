@@ -3,25 +3,24 @@
 namespace pantera\seo\widgets;
 
 use pantera\seo\models\Seo;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use Yii;
+use yii\widgets\ActiveForm;
 
 class SeoForm extends \yii\base\Widget
 {
+    /* @var ActiveRecord */
     public $model = null;
     public $modelName = null;
+    /* @var ActiveForm */
     public $form = null;
     public $title = 'SEO';
-    
+
     public function init()
     {
-        if(empty($this->modelName)) {
+        if (empty($this->modelName)) {
             $this->modelName = $this->model->className();
         }
-        
-        \pantera\seo\assets\FormAsset::register($this->getView());
-        
         parent::init();
     }
 
@@ -34,28 +33,22 @@ class SeoForm extends \yii\base\Widget
         } else {
             $this->model = new Seo;
         }
-
         $content = [];
-
-        $content[] = $this->form->field($this->model, 'modelName')->hiddenInput(['value' => $this->modelName])->label(false);
-        
+        $content[] = $this->form->field($this->model, 'modelName')
+            ->hiddenInput(['value' => $this->modelName])
+            ->label(false);
         $content[] = $this->form->field($this->model, 'title')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'description')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'keywords')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'h1')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'text')->textarea(['rows' => 6]);
-        $content[] = $this->form->field($this->model, 'meta_index')->textInput(['maxlength' => true]);
-        $content[] = $this->form->field($this->model, 'redirect_301')->textInput(['maxlength' => true]);
-        $header =  Html::tag('div', Html::tag('h5',$this->title), [
+        $header = Html::tag('div', Html::tag('h5', $this->title), [
             'class' => 'panel-heading'
         ]);
-
-        $body = Html::tag('div',implode('', $content), [
+        $body = Html::tag('div', implode('', $content), [
             'class' => 'panel-body'
         ]);
-
-        $panel = Html::tag('div',$header . $body,['class' => 'panel panel-default']);
-        
+        $panel = Html::tag('div', $header . $body, ['class' => 'panel panel-default']);
         return $panel;
     }
 }

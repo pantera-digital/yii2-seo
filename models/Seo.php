@@ -2,8 +2,6 @@
 
 namespace pantera\seo\models;
 
-use Yii;
-
 /**
  * This is the model class for table "seo_fields".
  *
@@ -15,11 +13,12 @@ use Yii;
  * @property string $keywords
  * @property string $description
  * @property string $text
- * @property string $meta_index
- * @property string $redirect_301
+ * @property string $url
  */
 class Seo extends \yii\db\ActiveRecord
 {
+    const SCENARIO_URL = 'url';
+
     /**
      * @inheritdoc
      */
@@ -34,11 +33,14 @@ class Seo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['url'], 'string', 'max' => 255, 'on' => self::SCENARIO_URL],
+            [['url'], 'required', 'on' => self::SCENARIO_URL],
             [['item_id'], 'integer'],
+            [['modelName'], 'string', 'max' => 150, 'on' => self::SCENARIO_DEFAULT],
+            [['item_id', 'modelName'], 'required', 'on' => self::SCENARIO_DEFAULT],
             [['text'], 'string'],
-            [['modelName'], 'string', 'max' => 150],
-            [['h1', 'title', 'keywords', 'meta_index'], 'string', 'max' => 255],
-            [['description', 'redirect_301'], 'string', 'max' => 522]
+            [['h1', 'title', 'keywords'], 'string', 'max' => 255],
+            [['description'], 'string', 'max' => 522]
         ];
     }
 
@@ -56,8 +58,6 @@ class Seo extends \yii\db\ActiveRecord
             'keywords' => 'Seo Keywords',
             'description' => 'Seo Description',
             'text' => 'Seo Text',
-            'meta_index' => 'Meta Index',
-            'redirect_301' => 'Redirect 301',
         ];
     }
 }
