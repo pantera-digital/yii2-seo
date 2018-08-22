@@ -12,11 +12,16 @@ namespace pantera\seo\controllers;
 use pantera\seo\models\Seo;
 use pantera\seo\models\SeoUrlSearch;
 use pantera\seo\Module;
+use PHPExcel_Cell;
+use PHPExcel_IOFactory;
+use PHPExcel_Worksheet_RowIterator;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 class UrlController extends Controller
 {
@@ -42,9 +47,68 @@ class UrlController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'import' => ['POST'],
                 ],
             ],
         ];
+    }
+
+    public function actionImport()
+    {
+        $file = UploadedFile::getInstanceByName('import');
+        if ($file) {
+            $available_formats = ["xls", "xlsx"];
+            ini_set('memory_limit', '12000M');
+            ini_set('max_execution_time', 999);
+            if (in_array($file->extension, $available_formats)) {
+                $filename = time() . "." . $file->extension;
+                FileHelper::createDirectory('uploads/seo');
+                $resultFileName = 'uploads/seo/' . $filename;
+                if ($file->saveAs($resultFileName)) {
+                    $xls = PHPExcel_IOFactory::load($resultFileName);
+                    $xls->setActiveSheetIndex(0);
+                    $sheet = $xls->getActiveSheet();
+                    foreach ($sheet->getRowIterator() as $line => $row) {
+                        /* @var $row PHPExcel_Worksheet_RowIterator */
+                        if ($line >= 2) {
+                            $cellIterator = $row->getCellIterator();
+                            $cellData = array();
+                            foreach ($cellIterator as $cell) {
+                                /* @var $cell PHPExcel_Cell */
+                                $cellData[$cell->getColumn()] = trim($cell->getCalculatedValue());
+                            }
+                            if (isset($cellData['A']) && $cellData['A'] != "") {
+                                $url = str_replace(Yii::$app->request->hostName, "", $cellData['A']);
+                                if ($url != "") {
+                                    $model = Seo::find()
+                                        ->andWhere(['=', Seo::tableName() . '.url', $url])
+                                        ->one();
+                                    if (is_null($model)) {
+                                        $model = new Seo();
+                                        $model->url = $url;
+                                    }
+                                    $model->setScenario(Seo::SCENARIO_URL);
+                                    if (isset($cellData['B'])) $model->title = $cellData['B'];
+                                    if (isset($cellData['C'])) $model->description = $cellData['C'];
+                                    if (isset($cellData['D'])) $model->keywords = $cellData['D'];
+                                    if (isset($cellData['E'])) $model->h1 = $cellData['E'];
+                                    if (isset($cellData['F'])) $model->text = $cellData['F'];
+                                    $model->save();
+                                }
+                            }
+                        }
+                    }
+                    Yii::$app->session->setFlash('success', 'Файл загружен');
+                } else {
+                    Yii::$app->session->setFlash('warning', 'Ошибка загрузки файла');
+                }
+            } else {
+                Yii::$app->session->setFlash('warning', 'Формат файла ' . $file->extension . ' не поддерживается. Только ' . implode(", ", $available_formats));
+            }
+        } else {
+            Yii::$app->session->setFlash('warning', 'Файл не загружен');
+        }
+        return $this->redirect(['index']);
     }
 
     public function actionIndex()
