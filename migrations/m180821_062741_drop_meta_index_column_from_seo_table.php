@@ -12,7 +12,7 @@ class m180821_062741_drop_meta_index_column_from_seo_table extends Migration
      */
     public function up()
     {
-        $this->dropColumn('seo', 'meta_index');
+        $this->dropColumn('{{%seo}}', 'meta_index');
     }
 
     /**
@@ -20,6 +20,6 @@ class m180821_062741_drop_meta_index_column_from_seo_table extends Migration
      */
     public function down()
     {
-        $this->addColumn('seo', 'meta_index', $this->string()->null());
+        $this->addColumn('{{%seo}}', 'meta_index', $this->string()->null());
     }
 }
