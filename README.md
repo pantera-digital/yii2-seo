@@ -86,3 +86,11 @@ Add to your model form:
         'form' => $form, 
     ]); ?>
 ```
+
+## Использование регистрации мета данных по адресу
+
+Нужно подключить в бутстрап приложения класс 
+
+```
+'bootstrap' => [pantera\seo\Registrar::className()],
+```
