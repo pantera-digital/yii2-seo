@@ -34,6 +34,7 @@ class Seo extends \yii\db\ActiveRecord
     {
         return [
             [['url'], 'string', 'max' => 255, 'on' => self::SCENARIO_URL],
+            ['url', 'trim'],
             [['url'], 'required', 'on' => self::SCENARIO_URL],
             [['item_id'], 'integer'],
             [['modelName'], 'string', 'max' => 150, 'on' => self::SCENARIO_DEFAULT],
