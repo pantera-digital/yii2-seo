@@ -48,9 +48,16 @@ class UrlController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'import' => ['POST'],
+                    'delete-all' => ['POST'],
                 ],
             ],
         ];
+    }
+
+    public function actionDeleteAll()
+    {
+        Seo::deleteAll(['IS NOT', Seo::tableName() . '.url', null]);
+        return $this->redirect(['index']);
     }
 
     public function actionImport()

@@ -62,6 +62,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create', ['create'], [
             'class' => 'btn btn-success',
         ]) ?>
+        <?= Html::a('Delete all', ['delete-all'], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                    'method' => 'POST',
+                'confirm' => 'Вы уверены?',
+            ],
+        ]) ?>
     </p>
 
     <?php Pjax::begin(); ?>
