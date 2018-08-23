@@ -12,7 +12,7 @@ class m180821_062806_drop_redirect_301_column_from_seo_table extends Migration
      */
     public function up()
     {
-        $this->dropColumn('seo', 'redirect_301');
+        $this->dropColumn('{{%seo}}', 'redirect_301');
     }
 
     /**
@@ -20,6 +20,6 @@ class m180821_062806_drop_redirect_301_column_from_seo_table extends Migration
      */
     public function down()
     {
-        $this->addColumn('seo', 'redirect_301', $this->string()->null());
+        $this->addColumn('{{%seo}}', 'redirect_301', $this->string()->null());
     }
 }

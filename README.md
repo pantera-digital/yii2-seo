@@ -27,7 +27,7 @@ php composer update
 Миграция:
 
 ```
-php yii migrate --migrationPath=vendor/pantera/yii2-seo/migrations
+php yii migrate --migrationPath=vendor/pantera-digital/yii2-seo/migrations
 ```
 
 Usage

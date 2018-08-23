@@ -12,7 +12,7 @@ class m180821_053047_add_url_column_to_seo_table extends Migration
      */
     public function up()
     {
-        $this->addColumn('seo', 'url', $this->string()->null());
+        $this->addColumn('{{%seo}}', 'url', $this->string()->null());
     }
 
     /**
@@ -20,6 +20,6 @@ class m180821_053047_add_url_column_to_seo_table extends Migration
      */
     public function down()
     {
-        $this->dropColumn('seo', 'url');
+        $this->dropColumn('{{%seo}}', 'url');
     }
 }
