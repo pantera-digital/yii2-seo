@@ -27,7 +27,7 @@ class Registrar extends BaseObject implements BootstrapInterface
     {
         Event::on(View::className(), View::EVENT_BEFORE_RENDER, function () {
             $url = Yii::$app->request->pathInfo;
-            $model = Seo::find()->where(['=', 'url', $url])->one();
+            $model = Seo::find()->where(['=', 'url', '/' . $url])->one();
             if ($model) {
                 if ($model->description) {
                     Yii::$app->view->registerMetaTag([
