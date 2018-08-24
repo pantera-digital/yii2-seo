@@ -12,7 +12,7 @@ class m180824_045922_create_seo_presets_table extends Migration
      */
     public function up()
     {
-        $this->createTable('seo_presets', [
+        $this->createTable('{{%seo_presets}}', [
             'id' => $this->primaryKey(),
             'key' => $this->string()->notNull(),
             'comment' => $this->text()->null(),
@@ -29,6 +29,6 @@ class m180824_045922_create_seo_presets_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('seo_presets');
+        $this->dropTable('{{%seo_presets}}');
     }
 }
