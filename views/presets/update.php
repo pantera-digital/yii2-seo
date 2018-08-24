@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model pantera\seo\models\SeoPresets */
 
-$this->title = 'Update Seo Presets: {nameAttribute}';
+$this->title = 'Update Seo Presets: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Seo Presets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

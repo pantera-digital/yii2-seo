@@ -1,8 +1,9 @@
 <?php
 
-use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Html;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel pantera\seo\models\SeoPresetsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -24,16 +25,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
             'key',
             'comment:ntext',
-            'status',
+            'status:boolean',
             'meta_title',
-            //'meta_description:ntext',
-            //'seo_h1',
-            //'seo_text:ntext',
+            'meta_description:ntext',
+            'seo_h1',
+            'seo_text:ntext',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
