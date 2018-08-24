@@ -12,19 +12,10 @@ class Text extends \yii\base\Widget
     public $model;
     public $text;
 
-    public function init()
-    {
-        parent::init();
-        $url = Yii::$app->request->pathInfo;
-        $this->model = Seo::find()->where(['=', 'url', $url])->one();
-        if (!empty($this->model->text)) {
-            $this->text = $this->model->text;
-        }
-    }
-
     public function run()
     {
         parent::run();
+        $this->text = Yii::$app->seo->getText() ?: $this->text;
         if ($this->text) {
             return Html::tag('div', $this->text, [
                 'class' => 'seo-block',

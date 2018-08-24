@@ -94,3 +94,13 @@ Add to your model form:
 ```
 'bootstrap' => [pantera\seo\Registrar::className()],
 ```
+
+Нужно подключить компонент в конфиг
+
+```
+'components' => [
+    'seo' => [
+        'class' => pantera\seo\components\SeoComponent::className(),
+    ],
+]
+```

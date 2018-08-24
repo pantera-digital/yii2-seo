@@ -30,21 +30,41 @@ class Registrar extends BaseObject implements BootstrapInterface
             $model = Seo::find()->where(['=', 'url', '/' . $url])->one();
             if ($model) {
                 if ($model->description) {
-                    Yii::$app->view->registerMetaTag([
-                        'name' => 'description',
-                        'content' => $model->description,
-                    ]);
+                    Yii::$app->seo->setDescription($model->description);
                 }
                 if ($model->keywords) {
-                    Yii::$app->view->registerMetaTag([
-                        'name' => 'keywords',
-                        'content' => $model->keywords
-                    ]);
+                    Yii::$app->seo->setKeywords($model->keywords);
                 }
-                if (!empty($model->title)) {
-                    Yii::$app->view->title = $model->title;
+                if ($model->title) {
+                    Yii::$app->seo->setTitle($model->title);
+                }
+                if ($model->h1) {
+                    Yii::$app->seo->setH1($model->h1);
+                }
+                if ($model->text) {
+                    Yii::$app->seo->setText($model->text);
                 }
             }
+            $this->registrar();
         });
+    }
+
+    private function registrar()
+    {
+        if (Yii::$app->seo->getDescription()) {
+            Yii::$app->view->registerMetaTag([
+                'name' => 'description',
+                'content' => Yii::$app->seo->getDescription(),
+            ]);
+        }
+        if (Yii::$app->seo->getKeywords()) {
+            Yii::$app->view->registerMetaTag([
+                'name' => 'keywords',
+                'content' => Yii::$app->seo->getKeywords()
+            ]);
+        }
+        if (Yii::$app->seo->getTitle()) {
+            Yii::$app->view->title = Yii::$app->seo->getTitle();
+        }
     }
 }
