@@ -21,4 +21,14 @@ class Module extends \yii\base\Module
         parent::init();
         ModuleAsset::register(Yii::$app->view);
     }
+
+    public function getMenuItems()
+    {
+    	$route = Yii::$app->controller->route;
+        return [['label' => 'SEO', 'url' => '#', 'items' =>[
+	        ['label' => 'Presets', 'url' => ['/seo/presets']],
+	        ['label' => 'Models', 'url' => ['/seo/model']],
+	        ['label' => 'Urls', 'url' => ['/seo/url'],],
+	    ]]];
+    }
 }
