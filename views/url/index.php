@@ -62,6 +62,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create', ['create'], [
             'class' => 'btn btn-success',
         ]) ?>
+        <?= Html::a('Удалить выбранное', ['delete-group'], [
+            'class' => 'btn btn-danger seo-url-group-delete',
+        ]) ?>
         <?= Html::a('Delete all', ['delete-all'], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -77,6 +80,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'cssClass' => 'selection',
+                'options' => [
+                    'style' => 'width: 20px !important;'
+                ],
+                'contentOptions' => [
+                    'style' => 'width: 20px !important;'
+                ],
+            ],
             'id',
             'url',
             'title',

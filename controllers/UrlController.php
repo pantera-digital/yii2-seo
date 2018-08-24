@@ -49,9 +49,16 @@ class UrlController extends Controller
                     'delete' => ['POST'],
                     'import' => ['POST'],
                     'delete-all' => ['POST'],
+                    'delete-group' => ['POST'],
                 ],
             ],
         ];
+    }
+
+    public function actionDeleteGroup()
+    {
+        Seo::deleteAll(['IN', 'id', Yii::$app->request->post('ids')]);
+        return $this->redirect(['index']);
     }
 
     public function actionDeleteAll()

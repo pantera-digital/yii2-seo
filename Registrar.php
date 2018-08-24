@@ -10,6 +10,7 @@ namespace pantera\seo;
 
 
 use pantera\seo\models\Seo;
+use function var_dump;
 use Yii;
 use yii\base\Application;
 use yii\base\BaseObject;
@@ -25,7 +26,7 @@ class Registrar extends BaseObject implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        Event::on(View::className(), View::EVENT_BEFORE_RENDER, function () {
+        Event::on(View::className(), View::EVENT_BEGIN_PAGE, function () {
             $url = Yii::$app->request->pathInfo;
             $model = Seo::find()->where(['=', 'url', '/' . $url])->one();
             if ($model) {
