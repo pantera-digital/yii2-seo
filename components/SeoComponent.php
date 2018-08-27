@@ -9,6 +9,7 @@
 namespace pantera\seo\components;
 
 
+use function var_dump;
 use yii\base\Component;
 
 class SeoComponent extends Component
@@ -32,7 +33,7 @@ class SeoComponent extends Component
      */
     public function setTitle($title)
     {
-        $this->_title = $title;
+        $this->_title = $this->prepare($title);
     }
 
     /**
@@ -48,7 +49,7 @@ class SeoComponent extends Component
      */
     public function setDescription($description)
     {
-        $this->_description = $description;
+        $this->_description = $this->prepare($description);
     }
 
     /**
@@ -64,7 +65,7 @@ class SeoComponent extends Component
      */
     public function setKeywords($keywords)
     {
-        $this->_keywords = $keywords;
+        $this->_keywords = $this->prepare($keywords);
     }
 
     /**
@@ -80,7 +81,7 @@ class SeoComponent extends Component
      */
     public function setH1($h1)
     {
-        $this->_h1 = $h1;
+        $this->_h1 = $this->prepare($h1);
     }
 
     /**
@@ -96,6 +97,15 @@ class SeoComponent extends Component
      */
     public function setText($text)
     {
-        $this->_text = $text;
+        $this->_text = $this->prepare($text);
+    }
+
+    private function prepare($string)
+    {
+        $chunks = preg_split('/\n+/', $string);
+        $string = implode(" ", $chunks);
+        $string = preg_replace('/\s+/', " ", $string);
+        $string = trim($string);
+        return $string;
     }
 }
