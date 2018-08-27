@@ -25,9 +25,10 @@ class Module extends \yii\base\Module
     public function getMenuItems()
     {
         return [['label' => 'SEO', 'url' => '#', 'items' =>[
-	        ['label' => 'Presets', 'url' => ['/seo/presets']],
-	        ['label' => 'Models', 'url' => ['/seo/model']],
-	        ['label' => 'Urls', 'url' => ['/seo/url']],
+            ['label' => 'Presets', 'url' => ['/seo/presets']],
+            ['label' => 'Models', 'url' => ['/seo/model']],
+            ['label' => 'Urls', 'url' => ['/seo/url']],
+            ['label' => 'Replacements', 'url' => ['/seo/replacement']],
 	    ]]];
     }
 }
