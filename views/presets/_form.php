@@ -14,13 +14,13 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-md-8">
-            <?= $form->field($model, 'key')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'key')->textarea(['rows' => 6, 'maxlength' => true]) ?>
 
-            <?= $form->field($model, 'meta_title')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'meta_title')->textarea(['rows' => 6, 'maxlength' => true]) ?>
 
             <?= $form->field($model, 'meta_description')->textarea(['rows' => 6]) ?>
 
-            <?= $form->field($model, 'seo_h1')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'seo_h1')->textarea(['rows' => 6, 'maxlength' => true]) ?>
 
             <?= $form->field($model, 'seo_text')->textarea(['rows' => 6]) ?>
         </div>
