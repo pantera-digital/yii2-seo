@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap\Collapse;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -25,8 +26,24 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'seo_text')->textarea(['rows' => 6]) ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
-
+            <?php
+            echo Html::label($model->getAttributeLabel('comment'));
+            if ($model->comment) {
+                echo Html::tag('div', nl2br($model->comment));
+                echo Html::tag('br');
+            }
+            echo Collapse::widget([
+                'options' => [
+                    'class' => 'collapse--without-style',
+                ],
+                'items' => [
+                    [
+                        'label' => 'Изменить комментарий',
+                        'content' => $form->field($model, 'comment')->textarea(['rows' => 10])->label(false),
+                    ]
+                ],
+            ]);
+            ?>
             <?= $form->field($model, 'status')->checkbox() ?>
         </div>
     </div>

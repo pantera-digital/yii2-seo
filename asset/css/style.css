@@ -1,0 +1,19 @@
+.collapse--without-style .panel {
+    border: none;
+    box-shadow: none;
+}
+
+.collapse--without-style .panel-default > .panel-heading {
+    padding: 0;
+    background: none;
+}
+
+.collapse--without-style .panel-default > .panel-heading a {
+    color: #337ab7;
+    text-decoration: underline;
+}
+
+.collapse--without-style .panel-default > .panel-heading + .panel-collapse > .panel-body{
+    border: none;
+    padding: 15px 0 0;
+}

@@ -15,6 +15,10 @@ class ModuleAsset extends AssetBundle
 {
     public $sourcePath = __DIR__ . '/asset';
 
+    public $css = [
+        'css/style.css',
+    ];
+
     public $js = [
         'js/script.js',
     ];
