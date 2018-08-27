@@ -30,7 +30,7 @@ class SeoModelSearch extends SeoSearch
         if (!$this->validate()) {
             return $dataProvider;
         }
-        $dataProvider->query->andWhere(['IS', Seo::tableName() . '.url', null])
+        $dataProvider->query->andWhere(['IS NOT', Seo::tableName() . '.item_id', null])
             ->andFilterWhere([
                 Seo::tableName() . '.modelName' => $this->modelName,
                 Seo::tableName() . '.item_id' => $this->item_id,
