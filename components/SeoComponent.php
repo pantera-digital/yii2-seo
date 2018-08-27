@@ -9,8 +9,10 @@
 namespace pantera\seo\components;
 
 
-use function var_dump;
+use pantera\seo\models\SeoReplacement;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
+use function str_replace;
 
 class SeoComponent extends Component
 {
@@ -19,6 +21,17 @@ class SeoComponent extends Component
     private $_keywords;
     private $_h1;
     private $_text;
+    private $_replacementsFrom = [];
+    private $_replacementsTo = [];
+
+    public function init()
+    {
+        parent::init();
+        $replacements = SeoReplacement::find()
+            ->all();
+        $this->_replacementsFrom = ArrayHelper::getColumn($replacements, 'from');
+        $this->_replacementsTo = ArrayHelper::getColumn($replacements, 'to');
+    }
 
     /**
      * @return mixed
@@ -106,6 +119,7 @@ class SeoComponent extends Component
         $string = implode(" ", $chunks);
         $string = preg_replace('/\s+/', " ", $string);
         $string = trim($string);
+        $string = str_replace($this->_replacementsFrom, $this->_replacementsTo, $string);
         return $string;
     }
 }
