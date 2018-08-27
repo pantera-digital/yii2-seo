@@ -3,6 +3,7 @@
 namespace pantera\seo\controllers;
 
 use pantera\seo\Module;
+use function var_dump;
 use Yii;
 use pantera\seo\models\SeoPresets;
 use pantera\seo\models\SeoPresetsSearch;
@@ -81,7 +82,11 @@ class PresetsController extends Controller
         $model = new SeoPresets();
         $model->loadDefaultValues();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if(Yii::$app->request->post('action') === 'apply') {
+                return $this->redirect(['update', 'id' => $model->id]);
+            }else{
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -101,7 +106,11 @@ class PresetsController extends Controller
         $model = $this->findModel($id);
         $model->loadDefaultValues();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if(Yii::$app->request->post('action') === 'apply') {
+                return $this->redirect(['update', 'id' => $model->id]);
+            }else{
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
