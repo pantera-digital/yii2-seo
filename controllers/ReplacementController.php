@@ -2,9 +2,11 @@
 
 namespace pantera\seo\controllers;
 
+use pantera\seo\Module;
 use Yii;
 use pantera\seo\models\SeoReplacement;
 use pantera\seo\models\SeoReplacementSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -14,12 +16,24 @@ use yii\filters\VerbFilter;
  */
 class ReplacementController extends Controller
 {
+    /* @var Module */
+    public $module;
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => $this->module->permissions,
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -101,6 +115,8 @@ class ReplacementController extends Controller
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
