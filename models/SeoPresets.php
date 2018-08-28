@@ -69,9 +69,9 @@ class SeoPresets extends \yii\db\ActiveRecord
         return [
             [['key'], 'required'],
             [['status'], 'default', 'value' => 1],
-            [['comment', 'meta_description', 'seo_text'], 'string'],
+            [['comment', 'meta_description', 'seo_text', 'meta_title', 'seo_h1'], 'string'],
             [['status'], 'integer'],
-            [['key', 'meta_title', 'seo_h1'], 'string', 'max' => 255],
+            [['key'], 'string', 'max' => 255],
         ];
     }
 
