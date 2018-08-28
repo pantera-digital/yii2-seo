@@ -58,7 +58,7 @@ class SeoPresets extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'seo_presets';
+        return '{{%seo_presets}}';
     }
 
     /**

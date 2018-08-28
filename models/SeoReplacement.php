@@ -18,7 +18,7 @@ class SeoReplacement extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'seo_replacement';
+        return '{{%seo_replacement}}';
     }
 
     /**
