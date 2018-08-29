@@ -10,6 +10,7 @@ namespace pantera\seo;
 
 
 use pantera\seo\models\Seo;
+use function urlencode;
 use function var_dump;
 use Yii;
 use yii\base\Application;
@@ -66,6 +67,9 @@ class Registrar extends BaseObject implements BootstrapInterface
         }
         if (Yii::$app->seo->getTitle()) {
             Yii::$app->view->title = Yii::$app->seo->getTitle();
+        }
+        if (Yii::$app->seo->getH1()) {
+            Yii::$app->response->headers->set('seoH1', urlencode(Yii::$app->seo->getH1()));
         }
     }
 }
