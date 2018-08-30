@@ -1,5 +1,0 @@
-# Mod_Autoindex
-<IfModule mod_autoindex.c>
-    # Disable Indexes
-    Options -Indexes
-</IfModule>
