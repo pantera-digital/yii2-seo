@@ -1,4 +1,4 @@
-$(document).on('click', '.seo-url-group-delete', function () {
+$(document).on('click', '.seo-group-delete', function () {
     var selections = $('.grid-view').yiiGridView('getSelectedRows');
     if (selections.length > 0 && confirm('Вы уверены?')) {
         var url = $(this).attr('href');

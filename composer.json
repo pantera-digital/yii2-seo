@@ -3,8 +3,13 @@
   "description": "Yii2 SEO module",
   "keywords": [
     "yii2",
-    "yii2",
     "seo"
+  ],
+  "authors": [
+    {
+      "name": "singletonn",
+      "email": "sopranowest@gmail.com"
+    }
   ],
   "homepage": "https://github.com/pantera-digital/yii2-seo",
   "type": "yii2-extension",
@@ -23,5 +28,8 @@
     "psr-4": {
       "pantera\\seo\\": ""
     }
+  },
+  "extra": {
+    "bootstrap": "pantera\\seo\\Bootstrap"
   }
 }

@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => 'btn btn-success',
         ]) ?>
         <?= Html::a('Удалить выбранное', ['delete-group'], [
-            'class' => 'btn btn-danger seo-url-group-delete',
+            'class' => 'btn btn-danger seo-group-delete',
         ]) ?>
         <?= Html::a('Delete all', ['delete-all'], [
             'class' => 'btn btn-danger',

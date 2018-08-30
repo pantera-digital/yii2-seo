@@ -87,14 +87,6 @@ Add to your model form:
     ]); ?>
 ```
 
-## Использование регистрации мета данных по адресу
-
-Нужно подключить в бутстрап приложения класс 
-
-```
-'bootstrap' => [pantera\seo\Registrar::className()],
-```
-
 Нужно подключить компонент в конфиг
 
 ```
@@ -103,4 +95,16 @@ Add to your model form:
         'class' => pantera\seo\components\SeoComponent::className(),
     ],
 ]
+```
+
+### Not found
+Для логирования нужно в обработчик ошибок добавить
+```
+if ($exception instanceof NotFoundHttpException) {
+    $logger = new pantera\seo\models\SeoNotFound();
+    $logger->url = Yii::$app->request->url;
+    $logger->referrer = Yii::$app->request->referrer;
+    $logger->ip = Yii::$app->request->getRemoteIP();
+    $logger->save();
+}
 ```

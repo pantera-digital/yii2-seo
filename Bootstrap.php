@@ -1,30 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: singletonn
- * Date: 8/23/18
- * Time: 3:02 PM
- */
 
 namespace pantera\seo;
 
-
 use pantera\seo\models\Seo;
-use function urlencode;
-use function var_dump;
 use Yii;
-use yii\base\Application;
-use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
 use yii\base\Event;
 use yii\web\View;
 
-class Registrar extends BaseObject implements BootstrapInterface
+class Bootstrap implements BootstrapInterface
 {
-    /**
-     * Bootstrap method to be called during application bootstrap stage.
-     * @param Application $app the application currently running
-     */
+
+    public static $bootstrap = true;
+
+    /** @inheritdoc */
     public function bootstrap($app)
     {
         Event::on(View::className(), View::EVENT_BEGIN_PAGE, function () {
