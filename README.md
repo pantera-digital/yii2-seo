@@ -108,3 +108,28 @@ if ($exception instanceof NotFoundHttpException) {
     $logger->save();
 }
 ```
+
+### Slug
+В модель нужно добавить поведение
+```
+public function behaviors()
+{
+    return [
+        [
+            'class' => pantera\seo\behaviors\SlugBehavior::className(),
+            'attribute' => 'title',
+            'slugAttribute' => 'slug',
+        ],
+    ];
+}
+```
+В модель подключить валидатор
+```
+public function rules()
+{
+    return [
+        [['slug'], pantera\seo\validators\SlugValidator::className(), 'skipOnEmpty' => false],
+    ];
+}
+```
+Сконфигурировать свой UrlManager
