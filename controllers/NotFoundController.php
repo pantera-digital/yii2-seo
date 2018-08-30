@@ -59,7 +59,7 @@ class NotFoundController extends Controller
 
     public function actionDeleteGroup()
     {
-        SeoNotFound::deleteAll(['IN', 'id', Yii::$app->request->post('ids')]);
+        SeoNotFound::deleteAll(['IN', SeoNotFound::tableName() . '.id', Yii::$app->request->post('ids')]);
         return $this->redirect(['index']);
     }
 

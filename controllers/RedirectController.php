@@ -9,9 +9,10 @@
 namespace pantera\seo\controllers;
 
 
-use pantera\seo\models\Seo;
-use pantera\seo\models\SeoUrlSearch;
+use pantera\seo\models\SeoRedirect;
+use pantera\seo\models\SeoRedirectSearch;
 use pantera\seo\Module;
+use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_IOFactory;
 use PHPExcel_Worksheet_RowIterator;
@@ -22,8 +23,9 @@ use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
+use function unlink;
 
-class UrlController extends Controller
+class RedirectController extends Controller
 {
     /* @var Module */
     public $module;
@@ -57,14 +59,35 @@ class UrlController extends Controller
 
     public function actionDeleteGroup()
     {
-        Seo::deleteAll(['IN', Seo::tableName() . '.id', Yii::$app->request->post('ids')]);
+        SeoRedirect::deleteAll(['IN', SeoRedirect::tableName() . '.id', Yii::$app->request->post('ids')]);
         return $this->redirect(['index']);
     }
 
     public function actionDeleteAll()
     {
-        Seo::deleteAll(['IS NOT', Seo::tableName() . '.url', null]);
+        SeoRedirect::deleteAll();
         return $this->redirect(['index']);
+    }
+
+    public function actionExport()
+    {
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->getProperties()->setTitle("Seo redirect");
+        $objPHPExcel->setActiveSheetIndex(0);
+        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'URL');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'Редирект (URL)');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'Код редиректа');
+        foreach (SeoRedirect::find()->all() as $key => $model) {
+            $key += 2;
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $key, $model->from);
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $key, $model->to);
+            $objPHPExcel->getActiveSheet()->setCellValue('C' . $key, $model->code);
+        }
+        $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="seo-redirect.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
     }
 
     public function actionImport()
@@ -92,21 +115,19 @@ class UrlController extends Controller
                                 $cellData[$cell->getColumn()] = trim($cell->getCalculatedValue());
                             }
                             if (isset($cellData['A']) && $cellData['A'] != "") {
-                                $url = str_replace(Yii::$app->request->hostName, "", $cellData['A']);
-                                if ($url != "") {
-                                    $model = Seo::find()
-                                        ->andWhere(['=', Seo::tableName() . '.url', $url])
+                                $from = str_replace(Yii::$app->request->hostName, "", $cellData['A']);
+                                $to = str_replace(Yii::$app->request->hostName, "", $cellData['B']);
+                                if ($from && $to) {
+                                    $model = SeoRedirect::find()
+                                        ->andWhere(['=', SeoRedirect::tableName() . '.from', $from])
+                                        ->andWhere(['=', SeoRedirect::tableName() . '.to', $to])
                                         ->one();
                                     if (is_null($model)) {
-                                        $model = new Seo();
-                                        $model->url = $url;
+                                        $model = new SeoRedirect();
+                                        $model->from = $from;
+                                        $model->to = $to;
                                     }
-                                    $model->setScenario(Seo::SCENARIO_URL);
-                                    if (isset($cellData['B'])) $model->title = $cellData['B'];
-                                    if (isset($cellData['C'])) $model->description = $cellData['C'];
-                                    if (isset($cellData['D'])) $model->keywords = $cellData['D'];
-                                    if (isset($cellData['E'])) $model->h1 = $cellData['E'];
-                                    if (isset($cellData['F'])) $model->text = $cellData['F'];
+                                    if (isset($cellData['C'])) $model->code = $cellData['C'];
                                     $model->save();
                                 }
                             }
@@ -128,7 +149,7 @@ class UrlController extends Controller
 
     public function actionIndex()
     {
-        $searchModel = new SeoUrlSearch();
+        $searchModel = new SeoRedirectSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -138,8 +159,8 @@ class UrlController extends Controller
 
     public function actionCreate()
     {
-        $model = new Seo();
-        $model->setScenario(Seo::SCENARIO_URL);
+        $model = new SeoRedirect();
+        $model->loadDefaultValues();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         }
@@ -151,7 +172,6 @@ class UrlController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->setScenario(Seo::SCENARIO_URL);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         }
@@ -177,12 +197,12 @@ class UrlController extends Controller
 
     /**
      * @param integer $id
-     * @return Seo Loaded model
+     * @return SeoRedirect Loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Seo::findOne($id)) !== null) {
+        if (($model = SeoRedirect::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -3,9 +3,11 @@
 namespace pantera\seo;
 
 use pantera\seo\models\Seo;
+use pantera\seo\models\SeoRedirect;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Event;
+use yii\web\Controller;
 use yii\web\View;
 
 class Bootstrap implements BootstrapInterface
@@ -16,6 +18,7 @@ class Bootstrap implements BootstrapInterface
     /** @inheritdoc */
     public function bootstrap($app)
     {
+        //Перед рендерингом страницы найдем сео найстроки и установим их
         Event::on(View::className(), View::EVENT_BEGIN_PAGE, function () {
             $url = Yii::$app->request->pathInfo;
             $model = Seo::find()->where(['=', 'url', '/' . $url])->one();
@@ -37,6 +40,16 @@ class Bootstrap implements BootstrapInterface
                 }
             }
             $this->registrar();
+        });
+        //Перед каждым акшеном смотрим настройки редеректов
+        Event::on(Controller::className(), Controller::EVENT_BEFORE_ACTION, function () {
+            $model = SeoRedirect::find()
+                ->andWhere(['=', SeoRedirect::tableName() . '.from', Yii::$app->request->url])
+                ->one();
+            if ($model) {
+                Yii::$app->response->redirect($model->to);
+                Yii::$app->end();
+            }
         });
     }
 

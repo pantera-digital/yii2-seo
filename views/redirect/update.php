@@ -7,12 +7,13 @@
  */
 
 use pantera\seo\models\Seo;
+use pantera\seo\models\SeoRedirect;
 use yii\web\View;
 
 /* @var $this View */
-/* @var $model Seo */
-$this->title = 'Update seo url: ' . $model->url;
-$this->params['breadcrumbs'][] = ['label' => 'Seo url', 'url' => ['index']];
+/* @var $model SeoRedirect */
+$this->title = 'Update seo redirect: ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Seo redirect', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <h1>

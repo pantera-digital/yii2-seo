@@ -30,6 +30,7 @@ class Module extends \yii\base\Module
             ['label' => 'Urls', 'url' => ['/seo/url']],
             ['label' => 'Replacements', 'url' => ['/seo/replacement']],
             ['label' => 'NotFound', 'url' => ['/seo/not-found']],
+            ['label' => 'Redirect', 'url' => ['/seo/redirect']],
         ]]];
     }
 }
