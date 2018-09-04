@@ -24,7 +24,7 @@ class Registrar implements BootstrapInterface
         //Перед рендерингом страницы найдем сео найстроки и установим их
         Event::on(View::className(), View::EVENT_BEGIN_PAGE, function () {
             $url = Yii::$app->request->pathInfo;
-            $model = Seo::find()->where(['=', 'url', '/' . $url])->one();
+            $model = Yii::$app->seo->getSeoModel('/' . $url);
             if ($model) {
                 if ($model->description) {
                     Yii::$app->seo->setDescription($model->description);

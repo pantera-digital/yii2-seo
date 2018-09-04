@@ -16,9 +16,9 @@ class Text extends \yii\base\Widget
     {
         parent::run();
         $url = Yii::$app->request->pathInfo;
-        $this->model = Seo::find()->where(['=', 'url', '/' . $url])->one();
-        if($this->model && $this->model->text){
-            Yii::$app->seo->setText($this->model->text);
+        $model = Yii::$app->seo->getSeoModel('/' . $url);
+        if ($model && $model->text) {
+            Yii::$app->seo->setText($model->text);
         }
         $this->text = Yii::$app->seo->getText() ?: $this->text;
         if ($this->text) {

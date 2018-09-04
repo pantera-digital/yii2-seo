@@ -9,9 +9,11 @@
 namespace pantera\seo\components;
 
 
+use pantera\seo\models\Seo;
 use pantera\seo\models\SeoReplacement;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
+use function is_null;
 use function str_replace;
 
 class SeoComponent extends Component
@@ -23,6 +25,8 @@ class SeoComponent extends Component
     private $_text;
     private $_replacementsFrom = [];
     private $_replacementsTo = [];
+    /* @var Seo|null */
+    private $_seoModel;
 
     public function init()
     {
@@ -31,6 +35,14 @@ class SeoComponent extends Component
             ->all();
         $this->_replacementsFrom = ArrayHelper::getColumn($replacements, 'from');
         $this->_replacementsTo = ArrayHelper::getColumn($replacements, 'to');
+    }
+
+    public function getSeoModel(string $url)
+    {
+        if (is_null($this->_seoModel) || $this->_seoModel->url !== $url) {
+            $this->_seoModel = Seo::find()->where(['=', 'url', $url])->one();
+        }
+        return $this->_seoModel;
     }
 
     /**
