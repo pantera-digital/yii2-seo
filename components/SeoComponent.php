@@ -13,7 +13,7 @@ use pantera\seo\models\Seo;
 use pantera\seo\models\SeoReplacement;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
-use function is_null;
+use function array_key_exists;
 use function str_replace;
 
 class SeoComponent extends Component
@@ -25,8 +25,8 @@ class SeoComponent extends Component
     private $_text;
     private $_replacementsFrom = [];
     private $_replacementsTo = [];
-    /* @var Seo|null */
-    private $_seoModel;
+    /* @var array Массив для всех найденых seo моделей */
+    private $_seoModels = [];
 
     public function init()
     {
@@ -37,12 +37,18 @@ class SeoComponent extends Component
         $this->_replacementsTo = ArrayHelper::getColumn($replacements, 'to');
     }
 
+    /**
+     * Получить модель настроект seo по переданому url адресу
+     * @param string $url Url адрес для которого хотим найти модель
+     * @return array|mixed|null|Seo|\yii\db\ActiveRecord
+     */
     public function getSeoModel(string $url)
     {
-        if (is_null($this->_seoModel) || $this->_seoModel->url !== $url) {
-            $this->_seoModel = Seo::find()->where(['=', 'url', $url])->one();
+        if (array_key_exists($url, $this->_seoModels) === false) {
+            $model = Seo::find()->where(['=', 'url', $url])->one();
+            $this->_seoModels[$url] = $model;
         }
-        return $this->_seoModel;
+        return $this->_seoModels[$url];
     }
 
     /**
