@@ -8,12 +8,16 @@
 
 namespace pantera\seo\behaviors;
 
+use pantera\seo\components\SlugCache;
+use pantera\seo\components\SlugCacheInterface;
 use pantera\seo\models\SeoSlug;
 use pantera\seo\validators\SlugValidator;
+use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\Inflector;
+use function is_null;
 
 class SlugBehavior extends Behavior
 {
@@ -36,6 +40,8 @@ class SlugBehavior extends Behavior
     private $slug;
     /* @var SeoSlug|null Модель с записью о slug для текушей модели */
     private $slugModel;
+    /* @var SlugCacheInterface */
+    private $cache;
 
     public function init()
     {
@@ -43,6 +49,10 @@ class SlugBehavior extends Behavior
         if (is_null($this->attribute) && is_null($this->slugAttribute)) {
             throw new InvalidConfigException('Параметр {attribute} или {slugAttribute} обязателен');
         }
+        if (Yii::$container->has(SlugCacheInterface::class) === false) {
+            Yii::$container->setSingleton(SlugCacheInterface::class, new SlugCache());
+        }
+        $this->cache = Yii::$container->get(SlugCacheInterface::class);
     }
 
     public function attach($owner)
@@ -73,14 +83,22 @@ class SlugBehavior extends Behavior
     public function find()
     {
         if ($this->owner->isNewRecord === false && SeoSlug::getDb()->getSchema()->getTableSchema(SeoSlug::tableName(), true) !== null) {
-            $this->slugModel = SeoSlug::find()
-                ->where([
-                    'AND',
-                    ['=', 'model', $this->owner->className()],
-                    ['=', 'model_id', $this->owner->getPrimaryKey()],
-                ])
-                ->orderBy(['id' => SORT_DESC])
-                ->one();
+            //Сначала попробуем найти запись в кеше
+            $this->slugModel = $this->cache->get($this->owner);
+            if (is_null($this->slugModel)) {
+                $this->slugModel = SeoSlug::find()
+                    ->where([
+                        'AND',
+                        ['=', 'model', $this->owner->className()],
+                        ['=', 'model_id', $this->owner->getPrimaryKey()],
+                    ])
+                    ->orderBy(['id' => SORT_DESC])
+                    ->one();
+                //Если запись найдена положим найденную запись в кеш
+                if ($this->slugModel) {
+                    $this->cache->set($this->owner, $this->slugModel);
+                }
+            }
             //Если запись найдена и указано поле в родительской модели то присвоем ему значение этого алиаса
             if ($this->slugModel && $this->slugAttribute) {
                 $this->owner->{$this->slugAttribute} = $this->slugModel->slug;
