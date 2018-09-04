@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: singletonn
+ * Date: 9/4/18
+ * Time: 2:16 PM
+ */
 
 namespace pantera\seo;
 
@@ -10,11 +16,8 @@ use yii\base\Event;
 use yii\web\Controller;
 use yii\web\View;
 
-class Bootstrap implements BootstrapInterface
+class Registrar implements BootstrapInterface
 {
-
-    public static $bootstrap = true;
-
     /** @inheritdoc */
     public function bootstrap($app)
     {

@@ -28,8 +28,5 @@
     "psr-4": {
       "pantera\\seo\\": ""
     }
-  },
-  "extra": {
-    "bootstrap": "pantera\\seo\\Bootstrap"
   }
 }
