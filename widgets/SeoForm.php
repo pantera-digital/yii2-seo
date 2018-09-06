@@ -2,6 +2,7 @@
 
 namespace pantera\seo\widgets;
 
+use dosamigos\ckeditor\CKEditor;
 use pantera\seo\models\Seo;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
@@ -38,7 +39,10 @@ class SeoForm extends \yii\base\Widget
         $content[] = $this->form->field($this->model, 'description')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'keywords')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'h1')->textInput(['maxlength' => true]);
-        $content[] = $this->form->field($this->model, 'text')->textarea(['rows' => 6]);
+        $content[] = $this->form->field($this->model, 'text')->widget(CKEditor::className(), [
+            'options' => ['rows' => 6],
+            'preset' => 'full'
+        ]);
         $header = Html::tag('div', Html::tag('h5', $this->title), [
             'class' => 'panel-heading'
         ]);

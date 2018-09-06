@@ -23,7 +23,7 @@ echo $form->field($model, 'keywords')->textInput(['maxlength' => true]);
 echo $form->field($model, 'h1')->textInput(['maxlength' => true]);
 echo $form->field($model, 'text')->widget(CKEditor::className(), [
     'options' => ['rows' => 6],
-    'preset' => 'basic'
+    'preset' => 'full'
 ]);
 echo Html::submitButton('Save', [
     'class' => 'btn btn-success',
