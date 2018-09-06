@@ -2,15 +2,19 @@
 
 namespace pantera\seo\behaviors;
 
+use pantera\seo\models\Seo;
 use yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
-use yii\helpers\Inflector;
-use yii\helpers\ArrayHelper;
-use pantera\seo\models\Seo;
+use function is_null;
 
 class SeoFields extends Behavior
 {
+    /* @var ActiveRecord */
+    public $owner;
+    /* @var Seo|null */
+    private $_model;
+
     public function events()
     {
         return [
@@ -24,9 +28,9 @@ class SeoFields extends Behavior
     {
         $post = Yii::$app->request->post();
         //Проверим на наличие в посте сео данных
-        if(!empty($post['Seo'])) {
+        if (!empty($post['Seo'])) {
             //Найдем существующую модель
-            if (($model = Seo::findOne(['item_id' => $this->owner->id, 'modelName' => $this->owner->className() ])) === null) {
+            if (($model = Seo::findOne(['item_id' => $this->owner->id, 'modelName' => $this->owner->className()])) === null) {
                 //Создадим новую модель
                 $model = new Seo([
                     'item_id' => $this->owner->id,
@@ -36,28 +40,27 @@ class SeoFields extends Behavior
 
             $model->load($post);
             $model->save();
-
-            //Почистим пост от наших данных
-            unset($post['Seo']);
-            Yii::$app->request->setBodyParams($post);
         }
     }
-    
+
     public function deleteFields($event)
     {
-        if($this->owner->seo) {
+        if ($this->owner->seo) {
             $this->owner->seo->delete();
         }
-        
+
         return true;
     }
-    
+
     public function getSeo()
     {
-        if($model = Seo::find()->where(['item_id' => $this->owner->id, 'modelName' => $this->owner->className()])->one()) {
-            return $model;
-        } else {
-            return new Seo;
+        if (is_null($this->_model)) {
+            $this->_model = Seo::find()->where([
+                'item_id' => $this->owner->getPrimaryKey(),
+                'modelName' => $this->owner::className(),
+            ])->one();
+            $this->_model = $this->_model ?: new Seo;
         }
+        return $this->_model;
     }
 }

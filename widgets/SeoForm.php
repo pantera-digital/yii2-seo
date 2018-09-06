@@ -34,9 +34,6 @@ class SeoForm extends \yii\base\Widget
             $this->model = new Seo;
         }
         $content = [];
-        $content[] = $this->form->field($this->model, 'modelName')
-            ->hiddenInput(['value' => $this->modelName])
-            ->label(false);
         $content[] = $this->form->field($this->model, 'title')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'description')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'keywords')->textInput(['maxlength' => true]);
