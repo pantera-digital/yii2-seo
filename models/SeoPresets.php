@@ -2,6 +2,7 @@
 
 namespace pantera\seo\models;
 
+use mikehaertl\tmp\File;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -49,8 +50,9 @@ class SeoPresets extends \yii\db\ActiveRecord
 
     private static function prepare($str, $params = [])
     {
-        $twig = new \Twig_Environment(new \Twig_Loader_String());
-        return $twig->render($str, $params);
+        $file = new File($str, '.twig');
+        $result = Yii::$app->view->renderFile($file->getFileName(), $params);
+        return $result;
     }
 
     /**

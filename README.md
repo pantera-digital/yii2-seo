@@ -30,6 +30,9 @@ php composer update
 php yii migrate --migrationPath=vendor/pantera-digital/yii2-seo/migrations
 ```
 
+## Настройка
+Модуль зависит от https://github.com/yiisoft/yii2-twig для полной работы пресетов нужно сконфигурировать это расширение
+
 Usage
 ---------------------------------
 
