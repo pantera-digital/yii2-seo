@@ -36,16 +36,14 @@ class SeoPresets extends \yii\db\ActiveRecord
         $description = ArrayHelper::getValue($default, 'description', null);
         $h1 = ArrayHelper::getValue($default, 'h1', null);
         $text = ArrayHelper::getValue($default, 'text', null);
-        if ($model) {
-            $title = $model->meta_title ? self::prepare($model->meta_title, $params) : $title;
-            Yii::$app->seo->setTitle($title);
-            $description = $model->meta_description ? self::prepare($model->meta_description, $params) : $description;
-            Yii::$app->seo->setDescription($description);
-            $h1 = $model->seo_h1 ? self::prepare($model->seo_h1, $params) : $h1;
-            Yii::$app->seo->setH1($h1);
-            $text = $model->seo_text ? self::prepare($model->seo_text, $params) : $text;
-            Yii::$app->seo->setText($text);
-        }
+        $title = $model && $model->meta_title ? self::prepare($model->meta_title, $params) : $title;
+        Yii::$app->seo->setTitle($title);
+        $description = $model && $model->meta_description ? self::prepare($model->meta_description, $params) : $description;
+        Yii::$app->seo->setDescription($description);
+        $h1 = $model && $model->seo_h1 ? self::prepare($model->seo_h1, $params) : $h1;
+        Yii::$app->seo->setH1($h1);
+        $text = $model && $model->seo_text ? self::prepare($model->seo_text, $params) : $text;
+        Yii::$app->seo->setText($text);
     }
 
     private static function prepare($str, $params = [])
