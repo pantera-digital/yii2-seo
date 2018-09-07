@@ -8,15 +8,15 @@
 
 namespace pantera\seo;
 
-use pantera\seo\models\Seo;
 use pantera\seo\models\SeoRedirect;
 use Yii;
+use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
 use yii\base\Event;
 use yii\web\Controller;
 use yii\web\View;
 
-class Registrar implements BootstrapInterface
+class Registrar extends BaseObject implements BootstrapInterface
 {
     /** @inheritdoc */
     public function bootstrap($app)
