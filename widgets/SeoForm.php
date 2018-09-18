@@ -35,7 +35,10 @@ class SeoForm extends \yii\base\Widget
         }
         $content = [];
         $content[] = $this->form->field($this->model, 'title')->textInput(['maxlength' => true]);
-        $content[] = $this->form->field($this->model, 'description')->textInput(['maxlength' => true]);
+        $content[] = $this->form->field($this->model, 'description')->textarea([
+            'rows' => 5,
+            'maxlength' => true,
+        ]);
         $content[] = $this->form->field($this->model, 'keywords')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'h1')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model, 'text')->widget(CKEditor::className(), [
