@@ -5,7 +5,6 @@ namespace pantera\seo\widgets;
 use dosamigos\ckeditor\CKEditor;
 use pantera\seo\models\Seo;
 use yii\db\ActiveRecord;
-use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 class SeoForm extends \yii\base\Widget
@@ -43,13 +42,6 @@ class SeoForm extends \yii\base\Widget
             'options' => ['rows' => 6],
             'preset' => 'full'
         ]);
-        $header = Html::tag('div', Html::tag('h5', $this->title), [
-            'class' => 'panel-heading'
-        ]);
-        $body = Html::tag('div', implode('', $content), [
-            'class' => 'panel-body'
-        ]);
-        $panel = Html::tag('div', $header . $body, ['class' => 'panel panel-default']);
-        return $panel;
+        return implode('', $content);
     }
 }
