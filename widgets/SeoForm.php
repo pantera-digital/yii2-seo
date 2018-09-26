@@ -26,22 +26,15 @@ class SeoForm extends \yii\base\Widget
 
     public function run()
     {
-        if (!$this->model->isNewRecord) {
-            if (($this->model = Seo::findOne(['item_id' => $this->model->id, 'modelName' => $this->modelName])) === null) {
-                $this->model = new Seo;
-            }
-        } else {
-            $this->model = new Seo;
-        }
         $content = [];
-        $content[] = $this->form->field($this->model, 'title')->textInput(['maxlength' => true]);
-        $content[] = $this->form->field($this->model, 'description')->textarea([
+        $content[] = $this->form->field($this->model->seo, 'title')->textInput(['maxlength' => true]);
+        $content[] = $this->form->field($this->model->seo, 'description')->textarea([
             'rows' => 5,
             'maxlength' => true,
         ]);
-        $content[] = $this->form->field($this->model, 'keywords')->textInput(['maxlength' => true]);
-        $content[] = $this->form->field($this->model, 'h1')->textInput(['maxlength' => true]);
-        $content[] = $this->form->field($this->model, 'text')->widget(CKEditor::className(), [
+        $content[] = $this->form->field($this->model->seo, 'keywords')->textInput(['maxlength' => true]);
+        $content[] = $this->form->field($this->model->seo, 'h1')->textInput(['maxlength' => true]);
+        $content[] = $this->form->field($this->model->seo, 'text')->widget(CKEditor::className(), [
             'options' => ['rows' => 6],
             'preset' => 'full'
         ]);

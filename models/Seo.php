@@ -18,6 +18,11 @@ namespace pantera\seo\models;
 class Seo extends \yii\db\ActiveRecord
 {
     const SCENARIO_URL = 'url';
+    /**
+     * @var null Сюда подставляем название модели от которой зависит Seo модель
+     * это нужно для формирования правильного название поля в форме
+     */
+    public $relationFormName = null;
 
     /**
      * @inheritdoc
@@ -25,6 +30,11 @@ class Seo extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%seo}}';
+    }
+
+    public function formName()
+    {
+        return $this->relationFormName ? $this->relationFormName. '[Seo]' : 'Seo';
     }
 
     /**
