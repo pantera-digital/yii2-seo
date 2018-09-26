@@ -11,6 +11,8 @@ class Text extends \yii\base\Widget
     /* @var Seo|null */
     public $model;
     public $text;
+    /* @var array Набор опций для контейнера */
+    public $options = [];
 
     public function run()
     {
@@ -22,9 +24,7 @@ class Text extends \yii\base\Widget
         }
         $this->text = Yii::$app->seo->getText() ?: $this->text;
         if ($this->text) {
-            return Html::tag('div', $this->text, [
-                'class' => 'seo-block',
-            ]);
+            return Html::tag('div', $this->text, $this->options);
         }
     }
 }
