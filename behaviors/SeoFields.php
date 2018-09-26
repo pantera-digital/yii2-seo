@@ -14,6 +14,8 @@ class SeoFields extends Behavior
     public $owner;
     /* @var Seo|null */
     private $_model;
+    /* @var array|null */
+    public $Seo;
 
     public function events()
     {
@@ -24,11 +26,16 @@ class SeoFields extends Behavior
         ];
     }
 
+    public function attach($owner)
+    {
+        parent::attach($owner);
+        //Добавляем правила для лоада Seo данныъ
+        $this->owner->validators->append( yii\validators\Validator::createValidator('safe', $this->owner, ['Seo']));
+    }
+
     public function updateFields($event)
     {
-        $post = Yii::$app->request->post();
-        //Проверим на наличие в посте сео данных
-        if (!empty($post['Seo'])) {
+        if ($this->Seo) {
             //Найдем существующую модель
             if (($model = Seo::findOne(['item_id' => $this->owner->id, 'modelName' => $this->owner->className()])) === null) {
                 //Создадим новую модель
@@ -37,8 +44,7 @@ class SeoFields extends Behavior
                     'modelName' => $this->owner->className(),
                 ]);
             }
-
-            $model->load($post);
+            $model->load(['Seo' => $this->Seo]);
             $model->save();
         }
     }
@@ -61,6 +67,7 @@ class SeoFields extends Behavior
             ])->one();
             $this->_model = $this->_model ?: new Seo;
         }
+        $this->_model->relationFormName = $this->owner->formName();
         return $this->_model;
     }
 }
