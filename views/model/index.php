@@ -22,7 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            'id',
             [
                 'attribute' => 'modelName',
                 'filter' => Html::activeDropDownList($searchModel, 'modelName', $modelNames, [
@@ -32,7 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'item_id',
             'title',
+            'h1',
             'description',
+            'keywords',
+            [
+                'attribute' => 'text',
+                'format' => 'html',
+                'contentOptions' => [
+                    'style' => 'white-space: initial;',
+                ],
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{delete}',
