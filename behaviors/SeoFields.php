@@ -15,6 +15,7 @@ class SeoFields extends Behavior
     /* @var Seo|null */
     private $_model;
     /* @var array|null */
+    //TODO: Не нравится название атрибута, потому что оно начинается с большой буквы и перекликается с getSeo - Саня
     public $Seo;
 
     public function events()
