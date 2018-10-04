@@ -8,6 +8,7 @@
 
 namespace pantera\seo\behaviors;
 
+use Closure;
 use pantera\seo\components\SlugCache;
 use pantera\seo\components\SlugCacheInterface;
 use pantera\seo\models\SeoSlug;
@@ -17,6 +18,8 @@ use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\Inflector;
+use function call_user_func;
+use function is_callable;
 use function is_null;
 
 class SlugBehavior extends Behavior
@@ -36,12 +39,43 @@ class SlugBehavior extends Behavior
     public $alwaysGenerateWhenChangeAttribute = false;
     /* @var string|null Префикс который будет автоматически добавлен в начало алиаса */
     public $prefix;
+    /* @var null|Closure Колбек вызывается после успешной генерации слуга */
+    public $afterGenerate;
+    /* @var null|Closure Колбек вызывается после успешного сохранения */
+    public $afterSave;
     /* @var string|null Slug который нужно сохранить */
-    private $slug;
+    private $_slug;
     /* @var SeoSlug|null Модель с записью о slug для текушей модели */
-    private $slugModel;
+    private $_slugModel;
     /* @var SlugCacheInterface */
-    private $cache;
+    private $_cache;
+
+    /**
+     * Получить объект кеширования
+     * @return SlugCacheInterface
+     */
+    public function getCache(): SlugCacheInterface
+    {
+        return $this->_cache;
+    }
+
+    /**
+     * Получить текуший сгенерированый slug
+     * @return null|string
+     */
+    public function getSlug()
+    {
+        return $this->_slug;
+    }
+
+    /**
+     * Установить новый slug
+     * @param $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->_slug = $slug;
+    }
 
     public function init()
     {
@@ -52,7 +86,7 @@ class SlugBehavior extends Behavior
         if (Yii::$container->has(SlugCacheInterface::class) === false) {
             Yii::$container->setSingleton(SlugCacheInterface::class, new SlugCache());
         }
-        $this->cache = Yii::$container->get(SlugCacheInterface::class);
+        $this->_cache = Yii::$container->get(SlugCacheInterface::class);
     }
 
     public function attach($owner)
@@ -84,9 +118,9 @@ class SlugBehavior extends Behavior
     {
         if ($this->owner->isNewRecord === false && SeoSlug::getDb()->getSchema()->getTableSchema(SeoSlug::tableName(), true) !== null) {
             //Сначала попробуем найти запись в кеше
-            $this->slugModel = $this->cache->get($this->owner);
-            if (is_null($this->slugModel)) {
-                $this->slugModel = SeoSlug::find()
+            $this->_slugModel = $this->_cache->get($this->owner);
+            if (is_null($this->_slugModel)) {
+                $this->_slugModel = SeoSlug::find()
                     ->where([
                         'AND',
                         ['=', 'model', $this->owner->className()],
@@ -95,13 +129,13 @@ class SlugBehavior extends Behavior
                     ->orderBy(['id' => SORT_DESC])
                     ->one();
                 //Если запись найдена положим найденную запись в кеш
-                if ($this->slugModel) {
-                    $this->cache->set($this->owner, $this->slugModel);
+                if ($this->_slugModel) {
+                    $this->_cache->set($this->owner, $this->_slugModel);
                 }
             }
             //Если запись найдена и указано поле в родительской модели то присвоем ему значение этого алиаса
-            if ($this->slugModel && $this->slugAttribute) {
-                $this->owner->{$this->slugAttribute} = $this->slugModel->slug;
+            if ($this->_slugModel && $this->slugAttribute) {
+                $this->owner->{$this->slugAttribute} = $this->_slugModel->slug;
             }
         }
     }
@@ -112,18 +146,21 @@ class SlugBehavior extends Behavior
     public function assign()
     {
         if ($this->slugAttributeOnlyLoad === false && $this->slugAttribute && $this->owner->{$this->slugAttribute}) {
-            $this->slug = $this->owner->{$this->slugAttribute};
+            $this->_slug = $this->owner->{$this->slugAttribute};
             //Если есть префикс добави его
             $this->applyPrefix();
         } elseif ($this->attribute && $this->owner->{$this->attribute}) {
             //Генерируем только если нету текушего slug или указана генерация всегда при смене {attribute} или если есть {slugAttribute} и он пустой
-            if (is_null($this->slugModel) || $this->alwaysGenerateWhenChangeAttribute || ($this->slugAttribute && empty($this->owner->{$this->slugAttribute}))) {
+            if (is_null($this->_slugModel) || $this->alwaysGenerateWhenChangeAttribute || ($this->slugAttribute && empty($this->owner->{$this->slugAttribute}))) {
                 $this->generate();
+                if (is_callable($this->afterGenerate)) {
+                    call_user_func($this->afterGenerate, $this);
+                }
             }
         }
         //Если есть {slugAttribute} то присвоим ему новый slug
         if ($this->slugAttribute) {
-            $this->owner->{$this->slugAttribute} = $this->slug;
+            $this->owner->{$this->slugAttribute} = $this->_slug;
         }
     }
 
@@ -133,7 +170,7 @@ class SlugBehavior extends Behavior
      */
     private function generate($iteration = 0)
     {
-        $this->slug = Inflector::slug($this->owner->{$this->attribute} . ($iteration > 0 ? '-' . $iteration : ''));
+        $this->_slug = Inflector::slug($this->owner->{$this->attribute} . ($iteration > 0 ? '-' . $iteration : ''));
         //Если есть префикс добави его
         $this->applyPrefix();
         while ($this->validate() === false) {
@@ -146,8 +183,8 @@ class SlugBehavior extends Behavior
      */
     private function applyPrefix()
     {
-        if ($this->prefix && strpos($this->slug, $this->prefix) === false) {
-            $this->slug = $this->prefix . $this->slug;
+        if ($this->prefix && strpos($this->_slug, $this->prefix) === false) {
+            $this->_slug = $this->prefix . $this->_slug;
         }
     }
 
@@ -158,7 +195,7 @@ class SlugBehavior extends Behavior
     private function validate()
     {
         $validator = new SlugValidator();
-        return $validator->validateSlug($this->owner, $this->slug);
+        return $validator->validateSlug($this->owner, $this->_slug);
     }
 
     /**
@@ -167,15 +204,15 @@ class SlugBehavior extends Behavior
      */
     public function save()
     {
-        $this->slug = trim(trim($this->slug), '/');
-        if (is_null($this->slugModel) || $this->slugModel->slug !== $this->slug) {
+        $this->_slug = trim(trim($this->_slug), '/');
+        if (is_null($this->_slugModel) || $this->_slugModel->slug !== $this->_slug) {
             //Если уже есть запись с таким slug то обновим её присвоев её максимальный id + 1
             $model = SeoSlug::find()
                 ->where([
                     'AND',
                     ['=', 'model', $this->owner->className()],
                     ['=', 'model_id', $this->owner->getPrimaryKey()],
-                    ['=', 'slug', $this->slug],
+                    ['=', 'slug', $this->_slug],
                 ])
                 ->one();
             if ($model) {
@@ -193,8 +230,11 @@ class SlugBehavior extends Behavior
                 $model->model = $this->owner->className();
                 $model->model_id = $this->owner->getPrimaryKey();
             }
-            $model->slug = $this->slug;
+            $model->slug = $this->_slug;
             $model->save();
+            if (is_callable($this->afterSave)) {
+                call_user_func($this->afterSave, $this);
+            }
         }
     }
 
@@ -226,6 +266,6 @@ class SlugBehavior extends Behavior
      */
     public function hasSlug()
     {
-        return is_null($this->slugModel) === false;
+        return is_null($this->_slugModel) === false;
     }
 }

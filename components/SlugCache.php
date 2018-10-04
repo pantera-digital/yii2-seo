@@ -40,4 +40,13 @@ class SlugCache extends BaseObject implements SlugCacheInterface
         $key = $model::className() . '-' . $model->getPrimaryKey();
         $this->_storage[$key] = $slug;
     }
+
+    /**
+     * Очистить хранилише
+     * @return void
+     */
+    public function removeAll()
+    {
+        $this->_storage = [];
+    }
 }

@@ -28,4 +28,10 @@ interface SlugCacheInterface
      * @return mixed
      */
     public function set(ActiveRecord $model, SeoSlug $slug);
+
+    /**
+     * Очистить хранилише
+     * @return void
+     */
+    public function removeAll();
 }
