@@ -179,10 +179,6 @@ class SlugBehavior extends Behavior
                 ])
                 ->one();
             if ($model) {
-                $maxIdInScope = SeoSlug::find()
-                    ->andWhere(['=', 'model', $this->owner->className()])
-                    ->andWhere(['=', 'model_id', $this->owner->getPrimaryKey()])
-                    ->max('id');
                 $maxId = SeoSlug::find()
                     ->max('id');
                 $oldId = $model->id;
@@ -191,11 +187,7 @@ class SlugBehavior extends Behavior
                 SeoSlug::updateAllCounters(['id' => -1], [
                     'AND',
                     ['>', SeoSlug::tableName() . '.id', $oldId],
-                    ['=', SeoSlug::tableName() . '.model', $this->owner->className()],
-                    ['=', SeoSlug::tableName() . '.model_id', $this->owner->getPrimaryKey()],
-                    ['!=', SeoSlug::tableName() . '.id', $model->id]
                 ]);
-                $model->id = $maxIdInScope;
             } else {
                 $model = new SeoSlug();
                 $model->model = $this->owner->className();
