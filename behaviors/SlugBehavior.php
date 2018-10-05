@@ -13,6 +13,7 @@ use pantera\seo\components\SlugCache;
 use pantera\seo\components\SlugCacheInterface;
 use pantera\seo\models\SeoSlug;
 use pantera\seo\validators\SlugValidator;
+use function var_dump;
 use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
@@ -43,6 +44,8 @@ class SlugBehavior extends Behavior
     public $afterGenerate;
     /* @var null|Closure Колбек вызывается после успешного сохранения */
     public $afterSave;
+    /* @var bool Указывает что генерация будет происходить после сохранения модели */
+    public $generateBeforeSave = false;
     /* @var string|null Slug который нужно сохранить */
     private $_slug;
     /* @var SeoSlug|null Модель с записью о slug для текушей модели */
@@ -102,13 +105,28 @@ class SlugBehavior extends Behavior
 
     public function events()
     {
-        return [
-            ActiveRecord::EVENT_BEFORE_VALIDATE => 'assign',
-            ActiveRecord::EVENT_AFTER_INSERT => 'save',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'save',
+        $events = [
+            ActiveRecord::EVENT_AFTER_INSERT => 'eventSaveCallback',
+            ActiveRecord::EVENT_AFTER_UPDATE => 'eventSaveCallback',
             ActiveRecord::EVENT_AFTER_DELETE => 'delete',
             ActiveRecord::EVENT_AFTER_FIND => 'find'
         ];
+        if ($this->generateBeforeSave === false) {
+            $events[ActiveRecord::EVENT_BEFORE_VALIDATE] = 'assign';
+        }
+        return $events;
+    }
+
+    /**
+     * Колбек для собитий сохранения
+     */
+    public function eventSaveCallback()
+    {
+        if ($this->generateBeforeSave) {
+            $this->owner->refresh();
+            $this->assign();
+        }
+        $this->save();
     }
 
     /**
@@ -168,7 +186,7 @@ class SlugBehavior extends Behavior
      * Создаём slug
      * @param integer $iteration Номер итерации если алиас уже используется будет в цикле добовлять номер итерации пока не достигнет уникального slug
      */
-    private function generate($iteration = 0)
+    protected function generate($iteration = 0)
     {
         $this->_slug = Inflector::slug($this->owner->{$this->attribute} . ($iteration > 0 ? '-' . $iteration : ''));
         //Если есть префикс добави его
@@ -181,7 +199,7 @@ class SlugBehavior extends Behavior
     /**
      * Применение префикса
      */
-    private function applyPrefix()
+    protected function applyPrefix()
     {
         if ($this->prefix && strpos($this->_slug, $this->prefix) === false) {
             $this->_slug = $this->prefix . $this->_slug;
@@ -192,7 +210,7 @@ class SlugBehavior extends Behavior
      * Валидация slug
      * @return boolean
      */
-    private function validate()
+    protected function validate()
     {
         $validator = new SlugValidator();
         return $validator->validateSlug($this->owner, $this->_slug);
