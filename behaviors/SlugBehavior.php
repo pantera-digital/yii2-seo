@@ -13,7 +13,6 @@ use pantera\seo\components\SlugCache;
 use pantera\seo\components\SlugCacheInterface;
 use pantera\seo\models\SeoSlug;
 use pantera\seo\validators\SlugValidator;
-use function var_dump;
 use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
@@ -38,7 +37,10 @@ class SlugBehavior extends Behavior
      * работает только если {slugAttribute} пусто или {slugAttributeOnlyLoad} true
      */
     public $alwaysGenerateWhenChangeAttribute = false;
-    /* @var string|null Префикс который будет автоматически добавлен в начало алиаса */
+    /**
+     * @var string|null|Closure Префикс который будет автоматически добавлен в начало алиаса
+     *Возможность передать callback
+     */
     public $prefix;
     /* @var null|Closure Колбек вызывается после успешной генерации слуга */
     public $afterGenerate;
@@ -201,8 +203,13 @@ class SlugBehavior extends Behavior
      */
     protected function applyPrefix()
     {
-        if ($this->prefix && strpos($this->_slug, $this->prefix) === false) {
-            $this->_slug = $this->prefix . $this->_slug;
+        if (is_callable($this->prefix)) {
+            $prefix = call_user_func($this->prefix, $this);
+        } else {
+            $prefix = $this->prefix;
+        }
+        if ($prefix && strpos($this->_slug, $prefix) === false) {
+            $this->_slug = $prefix . $this->_slug;
         }
     }
 
