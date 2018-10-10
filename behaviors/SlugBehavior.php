@@ -48,6 +48,8 @@ class SlugBehavior extends Behavior
     public $afterSave;
     /* @var bool Указывает что генерация будет происходить после сохранения модели */
     public $generateBeforeSave = false;
+    /* @var null|Closure Функция для генерации slug */
+    public $generator;
     /* @var string|null Slug который нужно сохранить */
     private $_slug;
     /* @var SeoSlug|null Модель с записью о slug для текушей модели */
@@ -190,7 +192,12 @@ class SlugBehavior extends Behavior
      */
     protected function generate($iteration = 0)
     {
-        $this->_slug = Inflector::slug($this->owner->{$this->attribute} . ($iteration > 0 ? '-' . $iteration : ''));
+        if (is_null($this->generator)) {
+            $this->_slug = Inflector::slug($this->owner->{$this->attribute});
+        } else {
+            $this->_slug = call_user_func($this->generator);
+        }
+        $this->_slug .= $iteration > 0 ? '-' . $iteration : '';
         //Если есть префикс добави его
         $this->applyPrefix();
         while ($this->validate() === false) {
