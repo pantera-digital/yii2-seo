@@ -50,7 +50,7 @@ class Registrar extends BaseObject implements BootstrapInterface
                 ->andWhere(['=', SeoRedirect::tableName() . '.from', Yii::$app->request->url])
                 ->one();
             if ($model) {
-                Yii::$app->response->redirect($model->to);
+                Yii::$app->response->redirect($model->to, $model->code);
                 Yii::$app->end();
             }
         });
