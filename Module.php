@@ -31,6 +31,7 @@ class Module extends \yii\base\Module
             ['label' => 'Replacements', 'url' => ['/seo/replacement']],
             ['label' => 'NotFound', 'url' => ['/seo/not-found']],
             ['label' => 'Redirect', 'url' => ['/seo/redirect']],
+            ['label' => 'Slug', 'url' => ['/seo/slug']],
         ]]];
     }
 }
