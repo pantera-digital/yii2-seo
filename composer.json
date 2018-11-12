@@ -21,7 +21,8 @@
     "phpoffice/phpexcel": "1.8.1",
     "yiisoft/yii2-twig": "2.0.6",
     "2amigos/yii2-ckeditor-widget" : "~2.1",
-    "mikehaertl/php-tmpfile": "^1.1"
+    "mikehaertl/php-tmpfile": "^1.1",
+    "dragonjet/yii2-opengraph": "dev-master"
   },
   "config": {
     "process-timeout": 1800

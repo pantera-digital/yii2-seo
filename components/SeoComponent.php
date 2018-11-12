@@ -10,6 +10,8 @@ namespace pantera\seo\components;
 
 use pantera\seo\models\Seo;
 use pantera\seo\models\SeoReplacement;
+use pantera\seo\Module;
+use function var_dump;
 use Yii;
 use yii\base\Component;
 use yii\db\ActiveRecord;
@@ -144,24 +146,37 @@ class SeoComponent extends Component
 
     /**
      * Зарегистрировать
-     * @param Seo $model
+     * @param ActiveRecord $model
      */
-    public function register(Seo $model)
+    public function register(ActiveRecord $model)
     {
-        if ($model->title) {
-            Yii::$app->seo->setTitle($model->title);
+        /* @var $seo Seo */
+        $seo = $model->seo;
+        if ($seo->title) {
+            Yii::$app->seo->setTitle($seo->title);
         }
-        if ($model->h1) {
-            Yii::$app->seo->setH1($model->h1);
+        if ($seo->h1) {
+            Yii::$app->seo->setH1($seo->h1);
         }
-        if ($model->description) {
-            Yii::$app->seo->setDescription($model->description);
+        if ($seo->description) {
+            Yii::$app->seo->setDescription($seo->description);
         }
-        if ($model->keywords) {
-            Yii::$app->seo->setKeywords($model->keywords);
+        if ($seo->keywords) {
+            Yii::$app->seo->setKeywords($seo->keywords);
         }
-        if ($model->text) {
-            Yii::$app->seo->setText($model->text);
+        if ($seo->text) {
+            Yii::$app->seo->setText($seo->text);
+        }
+        if (Yii::$app->has('openGraph')) {
+            Yii::$app->openGraph->title = Yii::$app->seo->getTitle();
+            if (Yii::$app->seo->getDescription()) {
+                Yii::$app->openGraph->description = Yii::$app->seo->getDescription();
+            }
+            if ($seo->og_image) {
+                Yii::$app->openGraph->image = Module::twigCompile($seo->og_image, [
+                    'model' => $model
+                ]);
+            }
         }
     }
 }

@@ -144,3 +144,14 @@ public function rules()
 }
 ```
 Сконфигурировать свой UrlManager
+
+### Модуль имеит возможность регистрации Open Graph тегов
+нужно сконфигурировать расширение https://packagist.org/packages/dragonjet/yii2-opengraph
+```
+'components' => [
+    'openGraph' => [
+        'class' => dragonjet\opengraph\OpenGraph::class,
+    ],
+],
+```
+В поле Og Image нужно написать как получить картинку используя twig

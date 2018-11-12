@@ -2,7 +2,7 @@
 
 namespace pantera\seo\models;
 
-use mikehaertl\tmp\File;
+use pantera\seo\Module;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -36,21 +36,16 @@ class SeoPresets extends \yii\db\ActiveRecord
         $description = ArrayHelper::getValue($default, 'description', null);
         $h1 = ArrayHelper::getValue($default, 'h1', null);
         $text = ArrayHelper::getValue($default, 'text', null);
-        $title = $model && $model->meta_title ? self::prepare($model->meta_title, $params) : $title;
+        $title = $model && $model->meta_title ? Module::twigCompile($model->meta_title, $params) : $title;
         Yii::$app->seo->setTitle($title);
-        $description = $model && $model->meta_description ? self::prepare($model->meta_description, $params) : $description;
+        if ($model && $model->meta_description) {
+            $description = Module::twigCompile($model->meta_description, $params);
+        }
         Yii::$app->seo->setDescription($description);
-        $h1 = $model && $model->seo_h1 ? self::prepare($model->seo_h1, $params) : $h1;
+        $h1 = $model && $model->seo_h1 ? Module::twigCompile($model->seo_h1, $params) : $h1;
         Yii::$app->seo->setH1($h1);
-        $text = $model && $model->seo_text ? self::prepare($model->seo_text, $params) : $text;
+        $text = $model && $model->seo_text ? Module::twigCompile($model->seo_text, $params) : $text;
         Yii::$app->seo->setText($text);
-    }
-
-    private static function prepare($str, $params = [])
-    {
-        $file = new File($str, '.twig');
-        $result = Yii::$app->view->renderFile($file->getFileName(), $params);
-        return $result;
     }
 
     /**

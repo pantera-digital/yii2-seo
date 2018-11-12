@@ -9,6 +9,7 @@
 namespace pantera\seo;
 
 
+use mikehaertl\tmp\File;
 use Yii;
 
 class Module extends \yii\base\Module
@@ -33,5 +34,18 @@ class Module extends \yii\base\Module
             ['label' => 'Redirect', 'url' => ['/seo/redirect']],
             ['label' => 'Slug', 'url' => ['/seo/slug']],
         ]]];
+    }
+
+    /**
+     * Прогнать переданую строку через twig
+     * @param $str
+     * @param array $params
+     * @return string
+     */
+    public static function twigCompile($str, $params = []): string
+    {
+        $file = new File($str, '.twig');
+        $result = Yii::$app->view->renderFile($file->getFileName(), $params);
+        return $result;
     }
 }

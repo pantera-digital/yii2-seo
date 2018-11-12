@@ -38,6 +38,7 @@ class SeoForm extends \yii\base\Widget
             'options' => ['rows' => 6],
             'preset' => 'full'
         ]);
+        $content[] = $this->form->field($this->model->seo, 'og_image')->textInput(['maxlength' => true]);
         return implode('', $content);
     }
 }
