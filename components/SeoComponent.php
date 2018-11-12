@@ -8,33 +8,34 @@
 
 namespace pantera\seo\components;
 
-
 use pantera\seo\models\Seo;
 use pantera\seo\models\SeoReplacement;
+use Yii;
 use yii\base\Component;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use function array_key_exists;
 use function str_replace;
 
 class SeoComponent extends Component
 {
-    private $_title;
-    private $_description;
-    private $_keywords;
-    private $_h1;
-    private $_text;
-    private $_replacementsFrom = [];
-    private $_replacementsTo = [];
+    private $title;
+    private $description;
+    private $keywords;
+    private $h1;
+    private $text;
+    private $replacementsFrom = [];
+    private $replacementsTo = [];
     /* @var array Массив для всех найденых seo моделей */
-    private $_seoModels = [];
+    private $seoModels = [];
 
     public function init()
     {
         parent::init();
         $replacements = SeoReplacement::find()
             ->all();
-        $this->_replacementsFrom = ArrayHelper::getColumn($replacements, 'from');
-        $this->_replacementsTo = ArrayHelper::getColumn($replacements, 'to');
+        $this->replacementsFrom = ArrayHelper::getColumn($replacements, 'from');
+        $this->replacementsTo = ArrayHelper::getColumn($replacements, 'to');
     }
 
     /**
@@ -44,11 +45,11 @@ class SeoComponent extends Component
      */
     public function getSeoModel(string $url)
     {
-        if (array_key_exists($url, $this->_seoModels) === false) {
+        if (array_key_exists($url, $this->seoModels) === false) {
             $model = Seo::find()->where(['=', 'url', $url])->one();
-            $this->_seoModels[$url] = $model;
+            $this->seoModels[$url] = $model;
         }
-        return $this->_seoModels[$url];
+        return $this->seoModels[$url];
     }
 
     /**
@@ -56,7 +57,7 @@ class SeoComponent extends Component
      */
     public function getTitle()
     {
-        return $this->_title;
+        return $this->title;
     }
 
     /**
@@ -64,7 +65,7 @@ class SeoComponent extends Component
      */
     public function setTitle($title)
     {
-        $this->_title = $this->prepare($title);
+        $this->title = $this->prepare($title);
     }
 
     /**
@@ -72,7 +73,7 @@ class SeoComponent extends Component
      */
     public function getDescription()
     {
-        return $this->_description;
+        return $this->description;
     }
 
     /**
@@ -80,7 +81,7 @@ class SeoComponent extends Component
      */
     public function setDescription($description)
     {
-        $this->_description = $this->prepare($description);
+        $this->description = $this->prepare($description);
     }
 
     /**
@@ -88,7 +89,7 @@ class SeoComponent extends Component
      */
     public function getKeywords()
     {
-        return $this->_keywords;
+        return $this->keywords;
     }
 
     /**
@@ -96,7 +97,7 @@ class SeoComponent extends Component
      */
     public function setKeywords($keywords)
     {
-        $this->_keywords = $this->prepare($keywords);
+        $this->keywords = $this->prepare($keywords);
     }
 
     /**
@@ -104,7 +105,7 @@ class SeoComponent extends Component
      */
     public function getH1()
     {
-        return $this->_h1;
+        return $this->h1;
     }
 
     /**
@@ -112,7 +113,7 @@ class SeoComponent extends Component
      */
     public function setH1($h1)
     {
-        $this->_h1 = $this->prepare($h1);
+        $this->h1 = $this->prepare($h1);
     }
 
     /**
@@ -120,7 +121,7 @@ class SeoComponent extends Component
      */
     public function getText()
     {
-        return $this->_text;
+        return $this->text;
     }
 
     /**
@@ -128,7 +129,7 @@ class SeoComponent extends Component
      */
     public function setText($text)
     {
-        $this->_text = $this->prepare($text);
+        $this->text = $this->prepare($text);
     }
 
     private function prepare($string)
@@ -137,7 +138,30 @@ class SeoComponent extends Component
         $string = implode(" ", $chunks);
         $string = preg_replace('/\s+/', " ", $string);
         $string = trim($string);
-        $string = str_replace($this->_replacementsFrom, $this->_replacementsTo, $string);
+        $string = str_replace($this->replacementsFrom, $this->replacementsTo, $string);
         return $string;
+    }
+
+    /**
+     * Зарегистрировать
+     * @param Seo $model
+     */
+    public function register(Seo $model)
+    {
+        if ($model->title) {
+            Yii::$app->seo->setTitle($model->title);
+        }
+        if ($model->h1) {
+            Yii::$app->seo->setH1($model->h1);
+        }
+        if ($model->description) {
+            Yii::$app->seo->setDescription($model->description);
+        }
+        if ($model->keywords) {
+            Yii::$app->seo->setKeywords($model->keywords);
+        }
+        if ($model->text) {
+            Yii::$app->seo->setText($model->text);
+        }
     }
 }
