@@ -18,9 +18,6 @@ use yii\web\View;
 
 class Registrar extends BaseObject implements BootstrapInterface
 {
-    /* @var string Событие вызывается после регистрации */
-    const EVENT_AFTER_REGISTRAR = 'eventAfterRegistrar';
-
     /** @inheritdoc */
     public function bootstrap($app)
     {
@@ -46,7 +43,6 @@ class Registrar extends BaseObject implements BootstrapInterface
                 }
             }
             $this->registrar();
-            Event::trigger(self::class, self::EVENT_AFTER_REGISTRAR);
         });
         //Перед каждым акшеном смотрим настройки редеректов
         Event::on(Controller::className(), Controller::EVENT_BEFORE_ACTION, function () {
