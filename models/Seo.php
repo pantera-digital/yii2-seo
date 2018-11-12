@@ -70,6 +70,7 @@ class Seo extends \yii\db\ActiveRecord
             'keywords' => 'Seo Keywords',
             'description' => 'Seo Description',
             'text' => 'Seo Text',
+            'og_image' => 'OG Image',
         ];
     }
 }

@@ -24,6 +24,8 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'seo_h1')->textarea(['rows' => 6, 'maxlength' => true]) ?>
 
             <?= $form->field($model, 'seo_text')->textarea(['rows' => 6]) ?>
+
+            <?= $form->field($model, 'og_image')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-md-4">
             <?php

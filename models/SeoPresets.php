@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property string $meta_description
  * @property string $seo_h1
  * @property string $seo_text
+ * @property string $og_image
  */
 class SeoPresets extends \yii\db\ActiveRecord
 {
@@ -36,6 +37,7 @@ class SeoPresets extends \yii\db\ActiveRecord
         $description = ArrayHelper::getValue($default, 'description', null);
         $h1 = ArrayHelper::getValue($default, 'h1', null);
         $text = ArrayHelper::getValue($default, 'text', null);
+        $ogImage = ArrayHelper::getValue($default, 'ogImage', null);
         $title = $model && $model->meta_title ? Module::twigCompile($model->meta_title, $params) : $title;
         Yii::$app->seo->setTitle($title);
         if ($model && $model->meta_description) {
@@ -46,6 +48,8 @@ class SeoPresets extends \yii\db\ActiveRecord
         Yii::$app->seo->setH1($h1);
         $text = $model && $model->seo_text ? Module::twigCompile($model->seo_text, $params) : $text;
         Yii::$app->seo->setText($text);
+        $ogImage = $model && $model->og_image ? $model->og_image : $ogImage;
+        Yii::$app->seo->setOgImage($ogImage);
     }
 
     /**
@@ -66,7 +70,7 @@ class SeoPresets extends \yii\db\ActiveRecord
             [['status'], 'default', 'value' => 1],
             [['comment', 'meta_description', 'seo_text', 'meta_title', 'seo_h1'], 'string'],
             [['status'], 'integer'],
-            [['key'], 'string', 'max' => 255],
+            [['key', 'og_image'], 'string', 'max' => 255],
         ];
     }
 
@@ -84,6 +88,7 @@ class SeoPresets extends \yii\db\ActiveRecord
             'meta_description' => 'Meta Description',
             'seo_h1' => 'Seo H1',
             'seo_text' => 'Seo Text',
+            'og_image' => 'OG Image',
         ];
     }
 

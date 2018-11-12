@@ -11,11 +11,11 @@ namespace pantera\seo\components;
 use pantera\seo\models\Seo;
 use pantera\seo\models\SeoReplacement;
 use pantera\seo\Module;
-use function var_dump;
 use Yii;
 use yii\base\Component;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use function array_key_exists;
 use function str_replace;
 
@@ -26,6 +26,24 @@ class SeoComponent extends Component
     private $keywords;
     private $h1;
     private $text;
+    private $ogImage;
+
+    /**
+     * @return mixed
+     */
+    public function getOgImage()
+    {
+        return $this->ogImage;
+    }
+
+    /**
+     * @param mixed $ogImage
+     */
+    public function setOgImage($ogImage)
+    {
+        $this->ogImage = $ogImage;
+    }
+
     private $replacementsFrom = [];
     private $replacementsTo = [];
     /* @var array Массив для всех найденых seo моделей */
@@ -167,15 +185,19 @@ class SeoComponent extends Component
         if ($seo->text) {
             Yii::$app->seo->setText($seo->text);
         }
+        if ($seo->og_image) {
+            Yii::$app->seo->setOgImage($seo->og_image);
+        }
         if (Yii::$app->has('openGraph')) {
             Yii::$app->openGraph->title = Yii::$app->seo->getTitle();
             if (Yii::$app->seo->getDescription()) {
                 Yii::$app->openGraph->description = Yii::$app->seo->getDescription();
             }
-            if ($seo->og_image) {
-                Yii::$app->openGraph->image = Module::twigCompile($seo->og_image, [
+            if (Yii::$app->seo->getOgImage()) {
+                $image = Module::twigCompile($seo->og_image, [
                     'model' => $model
                 ]);
+                Yii::$app->openGraph->image = Url::to($image, true);
             }
         }
     }
