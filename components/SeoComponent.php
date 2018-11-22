@@ -125,6 +125,10 @@ class SeoComponent extends Component
      */
     public function getH1()
     {
+        $model = $this->getSeoModel('/' . Yii::$app->request->pathInfo);
+        if ($model && $model->h1) {
+            $this->h1 = $model->h1;
+        }
         return $this->h1;
     }
 
