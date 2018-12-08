@@ -1,5 +1,6 @@
 <?php
 
+use pantera\seo\models\SeoPresets;
 use yii\db\Migration;
 
 /**
@@ -12,7 +13,7 @@ class m181112_061943_add_og_image_column_to_seo_presets_table extends Migration
      */
     public function up()
     {
-        $this->addColumn('seo_presets', 'og_image', $this->string()->null());
+        $this->addColumn(SeoPresets::tableName(), 'og_image', $this->string()->null());
     }
 
     /**
@@ -20,6 +21,6 @@ class m181112_061943_add_og_image_column_to_seo_presets_table extends Migration
      */
     public function down()
     {
-        $this->dropColumn('seo_presets', 'og_image');
+        $this->dropColumn(SeoPresets::tableName(), 'og_image');
     }
 }

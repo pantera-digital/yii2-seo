@@ -1,5 +1,6 @@
 <?php
 
+use pantera\seo\models\Seo;
 use yii\db\Migration;
 
 /**
@@ -12,7 +13,7 @@ class m181112_053835_add_og_image_column_to_seo_table extends Migration
      */
     public function up()
     {
-        $this->addColumn('seo', 'og_image', $this->string()->null());
+        $this->addColumn(Seo::tableName(), 'og_image', $this->string()->null());
     }
 
     /**
@@ -20,6 +21,6 @@ class m181112_053835_add_og_image_column_to_seo_table extends Migration
      */
     public function down()
     {
-        $this->dropColumn('seo', 'og_image');
+        $this->dropColumn(Seo::tableName(), 'og_image');
     }
 }
