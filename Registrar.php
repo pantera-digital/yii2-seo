@@ -47,7 +47,7 @@ class Registrar extends BaseObject implements BootstrapInterface
         //Перед каждым акшеном смотрим настройки редеректов
         Event::on(Controller::className(), Controller::EVENT_BEFORE_ACTION, function () {
             $model = SeoRedirect::find()
-                ->andWhere(['=', SeoRedirect::tableName() . '.from', Yii::$app->request->url])
+                ->andWhere(['=', SeoRedirect::tableName() . '.from', urldecode(Yii::$app->request->url)])
                 ->one();
             if ($model) {
                 Yii::$app->response->redirect($model->to, $model->code);
