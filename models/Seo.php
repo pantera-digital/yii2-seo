@@ -51,7 +51,8 @@ class Seo extends \yii\db\ActiveRecord
             [['modelName'], 'string', 'max' => 150, 'on' => self::SCENARIO_DEFAULT],
             [['item_id', 'modelName'], 'required', 'on' => self::SCENARIO_DEFAULT],
             [['text'], 'string'],
-            [['h1', 'title', 'keywords', 'og_image'], 'string', 'max' => 255],
+            [['h1', 'title', 'og_image'], 'string', 'max' => 255],
+            [['keywords'], 'string'],
             [['description'], 'string', 'max' => 522]
         ];
     }

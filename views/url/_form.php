@@ -18,8 +18,8 @@ use yii\widgets\ActiveForm;
 $form = ActiveForm::begin();
 echo $form->field($model, 'url')->textInput(['maxlength' => true]);
 echo $form->field($model, 'title')->textInput(['maxlength' => true]);
-echo $form->field($model, 'description')->textarea(['rows' => 6, 'maxlength' => true]);
-echo $form->field($model, 'keywords')->textInput(['maxlength' => true]);
+echo $form->field($model, 'description')->textarea(['rows' => 6]);
+echo $form->field($model, 'keywords')->textarea(['rows' => 2]);
 echo $form->field($model, 'h1')->textInput(['maxlength' => true]);
 echo $form->field($model, 'text')->widget(CKEditor::className(), [
     'options' => ['rows' => 6],
