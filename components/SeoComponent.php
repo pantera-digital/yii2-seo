@@ -21,12 +21,16 @@ use function str_replace;
 
 class SeoComponent extends Component
 {
-    private $title;
-    private $description;
-    private $keywords;
-    private $h1;
-    private $text;
-    private $ogImage;
+    protected $title;
+    protected $description;
+    protected $keywords;
+    protected $h1;
+    protected $text;
+    protected $ogImage;
+    protected $replacementsFrom = [];
+    protected $replacementsTo = [];
+    /* @var array Массив для всех найденых seo моделей */
+    protected $seoModels = [];
 
     /**
      * @return mixed
@@ -43,11 +47,6 @@ class SeoComponent extends Component
     {
         $this->ogImage = $ogImage;
     }
-
-    private $replacementsFrom = [];
-    private $replacementsTo = [];
-    /* @var array Массив для всех найденых seo моделей */
-    private $seoModels = [];
 
     public function init()
     {
