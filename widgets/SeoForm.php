@@ -4,6 +4,7 @@ namespace pantera\seo\widgets;
 
 use dosamigos\ckeditor\CKEditor;
 use pantera\seo\models\Seo;
+use mihaildev\elfinder\ElFinder;
 use yii\db\ActiveRecord;
 use yii\widgets\ActiveForm;
 
@@ -36,7 +37,10 @@ class SeoForm extends \yii\base\Widget
         $content[] = $this->form->field($this->model->seo, 'h1')->textInput(['maxlength' => true]);
         $content[] = $this->form->field($this->model->seo, 'text')->widget(CKEditor::className(), [
             'options' => ['rows' => 6],
-            'preset' => 'full'
+            'preset' => 'full',
+            'clientOptions' => ElFinder::ckeditorOptions('elfinder', [
+                'allowedContent' => true,
+            ]),
         ]);
         $content[] = $this->form->field($this->model->seo, 'og_image')->textInput(['maxlength' => true]);
         return implode('', $content);
