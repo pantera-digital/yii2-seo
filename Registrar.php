@@ -56,7 +56,7 @@ class Registrar extends BaseObject implements BootstrapInterface
         });
     }
 
-    private function registrar()
+    protected function registrar()
     {
         if (Yii::$app->seo->getDescription()) {
             Yii::$app->view->registerMetaTag([
