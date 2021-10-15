@@ -62,13 +62,13 @@ class Registrar extends BaseObject implements BootstrapInterface
             Yii::$app->view->registerMetaTag([
                 'name' => 'description',
                 'content' => Yii::$app->seo->getDescription(),
-            ]);
+            ], 'description');
         }
         if (Yii::$app->seo->getKeywords()) {
             Yii::$app->view->registerMetaTag([
                 'name' => 'keywords',
                 'content' => Yii::$app->seo->getKeywords()
-            ]);
+            ], 'keywords');
         }
         if (Yii::$app->seo->getTitle()) {
             Yii::$app->view->title = Yii::$app->seo->getTitle();
